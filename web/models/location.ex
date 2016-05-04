@@ -1,6 +1,8 @@
 defmodule Wander.Location do
   use Wander.Web, :model
   import Wander.Repo
+  import Wander.LengthUnitConverter
+  alias Postgrex.Point
 
   schema "locations" do
     field :name, :string
@@ -37,18 +39,12 @@ defmodule Wander.Location do
   end
 
   def within_distance(query, {_, _} = distance, from_point) do
-    distance = distance
-    |> Wander.LengthUnitConverter.convert(:mi)
-    within_distance(query, distance, from_point)
+    {mi, _} = distance |> convert(:mi)
+    within_distance(query, mi, from_point)
   end
 
-  def within_distance(query, distance, {lat, long}) do
-    within_distance(query, distance, %Postgrex.Point{x: long, y: lat})
-  end
-
-  def within_distance(query, distance, from_point) do
-    IO.inspect from_point
+  def within_distance(query, mi, from_point) do
     from location in query,
-      where: distance(location.longlat, ^from_point) <= ^distance
+      where: distance(location.longlat, ^from_point) <= ^mi
   end
 end

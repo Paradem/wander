@@ -33,7 +33,6 @@ defmodule Wander.Location do
   Creates a changeset based on the `model` and `params`.
 
   If no params are provided, an invalid changeset is returned
-  B
   with no validation performed.
   """
   def changeset(model, params \\ :empty) do
@@ -50,4 +49,3 @@ defmodule Wander.Location do
     %{location | lat: location.longlat.y, lng: location.longlat.x}
   end
 end
-

@@ -3,7 +3,7 @@ defmodule Wander.Location do
   import Wander.Repo
   import Wander.LengthUnitConverter
 
-  # In order to be compatible with the Rails version, we exclude the :longlat but include :lat and :lng, which have to be manually added by calling Location.as_backwards_compatible
+  # In order to be compatible with the Rails version, we exclude the :longlat but include :lat and :lng, which can be set with the as_backwards_compatible function.
   @derive {Poison.Encoder, only: [:name, :details, :city_id, :g_details, :g_summary, :g_place_id, :g_place_id, :g_details_queried_at, :is_displayed, :is_notifiable, :is_go_hereable, :is_you_are_hereable, :is_welcomeable, :website, :lat, :lng]}
 
   schema "locations" do
@@ -22,6 +22,8 @@ defmodule Wander.Location do
     field :is_you_are_hereable, :boolean, default: false
     field :is_welcomeable, :boolean, default: false
     field :website, :string
+    field :lat, :float, virtual: true
+    field :lng, :float, virtual: true
 
     timestamps
   end
@@ -57,8 +59,7 @@ defmodule Wander.Location do
   end
 
   def as_backwards_compatible(location) do
-    location
-    |> Map.merge(%{lat: location.longlat.y, lng: location.longlat.x})
+    %{location | lat: location.longlat.y, lng: location.longlat.x}
   end
 end
 

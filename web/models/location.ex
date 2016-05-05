@@ -1,7 +1,5 @@
 defmodule Wander.Location do
   use Wander.Web, :model
-  import Wander.Repo
-  import Wander.LengthUnitConverter
 
   # In order to be compatible with the Rails version, we exclude the :longlat but include :lat and :lng, which can be set with the as_backwards_compatible function.
   @derive {Poison.Encoder, only: [:name, :details, :city_id, :g_details, :g_summary, :g_place_id, :g_place_id, :g_details_queried_at, :is_displayed, :is_notifiable, :is_go_hereable, :is_you_are_hereable, :is_welcomeable, :website, :lat, :lng]}
@@ -41,16 +39,6 @@ defmodule Wander.Location do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
-  end
-
-  def within_distance(query, {_, _} = distance, from_point) do
-    {mi, _} = distance |> convert(:mi)
-    within_distance(query, mi, from_point)
-  end
-
-  def within_distance(query, mi, from_point) do
-    from location in query,
-      where: distance(location.longlat, ^from_point) <= ^mi
   end
 
   def as_backwards_compatible(locations) when is_list(locations) do

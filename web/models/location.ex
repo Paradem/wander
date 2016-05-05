@@ -40,6 +40,11 @@ defmodule Wander.Location do
     |> cast(params, @required_fields, @optional_fields)
   end
 
+  def neighborhoods(query, city_id) do
+    from location in query,
+      where: location.city_id == ^city_id and location.is_welcomeable == true
+  end
+
   def as_backwards_compatible(locations) when is_list(locations) do
     locations
     |> Enum.map(&as_backwards_compatible/1)

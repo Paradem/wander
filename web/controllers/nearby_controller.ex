@@ -16,7 +16,7 @@ defmodule Wander.NearbyController do
     %{q: %{lat: point.y, lng: point.x}}
     |> with_locations
     |> with_city
-    #|> with_neighborhoods
+    |> with_neighborhoods
     #|> with_curated_collections
   end
 
@@ -38,6 +38,13 @@ defmodule Wander.NearbyController do
 
     response |> Map.merge(%{city: city})
   end
+
+  defp with_neighborhoods(%{city: %{id: city_id}} = response) do
+    neighborhoods = Location.neighborhoods(Location, city_id)
+    |> Repo.all
+    response |> Map.merge(%{neighborhoods: neighborhoods})
+  end
+  defp with_neighborhoods(response), do: response
 
   defp as_point(%{lat: lat, lng: lng}), do: %Point{y: lat, x: lng}
   defp as_point(%{"lat" => lat, "lng" => lng}) do

@@ -1,14 +1,15 @@
 defmodule Wander.Location do
   use Wander.Web, :model
 
+  alias Wander.CuratedCollectionLocation
+
   # In order to be compatible with the Rails version, we exclude the :longlat but include :lat and :lng, which can be set with the as_backwards_compatible function.
-  @derive {Poison.Encoder, only: [:name, :details, :city_id, :g_details, :g_summary, :g_place_id, :g_place_id, :g_details_queried_at, :is_displayed, :is_notifiable, :is_go_hereable, :is_you_are_hereable, :is_welcomeable, :website, :lat, :lng]}
+  @derive {Poison.Encoder, only: [:name, :details, :city_id, :g_details, :g_summary, :g_place_id, :g_place_id, :g_details_queried_at, :is_displayed, :is_notifiable, :is_go_hereable, :is_you_are_hereable, :is_welcomeable, :website, :lat, :lng, :curatedCollections]}
 
   schema "locations" do
     field :name, :string
     field :details, :map
     field :longlat, Wander.Point
-    field :city_id, :integer
     field :g_details, :map
     field :g_summary, :map
     field :g_place_id, :string
@@ -20,8 +21,10 @@ defmodule Wander.Location do
     field :is_you_are_hereable, :boolean, default: false
     field :is_welcomeable, :boolean, default: false
     field :website, :string
-    field :lat, :float, virtual: true
-    field :lng, :float, virtual: true
+
+    belongs_to :city, City
+    has_many :curated_collections_locations, CuratedCollectionLocation
+    has_many :curated_collections, through: [:curated_collections_locations, :curated_collection]
 
     timestamps
   end
@@ -45,12 +48,20 @@ defmodule Wander.Location do
       where: location.city_id == ^city_id and location.is_welcomeable == true
   end
 
-  def as_backwards_compatible(locations) when is_list(locations) do
-    locations
-    |> Enum.map(&as_backwards_compatible/1)
+  def with_curated_collections(query) do
+    from location in query,
+      join: curated_collection in assoc(location, :curated_collections),
+      preload: [curated_collections: curated_collection]
   end
 
-  def as_backwards_compatible(location) do
-    %{location | lat: location.longlat.y, lng: location.longlat.x}
+  def with_api_fields(locations) when is_list(locations) do
+    locations
+    |> Enum.map(&with_api_fields/1)
+  end
+
+  def with_api_fields(location) do
+    location |> Map.merge(%{lat: location.longlat.y,
+                           lng: location.longlat.x,
+                           curatedCollections: location.curated_collections |> Enum.map(&(&1.id))})
   end
 end

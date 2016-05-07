@@ -6,7 +6,7 @@ defmodule Wander.Repo.Migrations.CreateLocation do
       add :name, :string
       add :details, :map
       add :longlat, :point
-      add :city_id, :integer
+      add :city_id, references(:cities)
       add :g_details, :map
       add :g_summary, :map
       add :g_place_id, :string

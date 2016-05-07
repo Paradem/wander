@@ -14,7 +14,7 @@ defmodule Wander.City do
     timestamps
   end
 
-  @required_fields ~w(name time_zone geofences_cache)
+  @required_fields ~w(name time_zone)
   @optional_fields ~w()
 
   @doc """

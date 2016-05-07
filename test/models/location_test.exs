@@ -2,6 +2,7 @@ defmodule Wander.LocationTest do
   use Wander.ModelCase
 
   alias Wander.Location
+  alias Wander.Distance
   alias Postgrex.Point
 
   @valid_attrs %{city_id: 42, details: %{}, g_details: %{}, g_details_queried_at: "2010-04-17 14:00:00", g_place_id: "some content", g_rating: "120.5", g_summary: %{}, is_displayed: true, is_go_hereable: true, is_notifiable: true, is_welcomeable: true, is_you_are_hereable: true, longlat: %Point{y: 41.559977, x: 2.016617}, name: "some content", website: "some content"}
@@ -33,7 +34,7 @@ defmodule Wander.LocationTest do
 
   defp locations_in_distance(distance, latlong) do
     Location
-    |> Location.within_distance(distance, latlong)
+    |> Distance.within_distance(distance, latlong)
     |> select_name
     |> Repo.all
   end

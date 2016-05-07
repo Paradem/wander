@@ -3,7 +3,7 @@ defmodule Wander.CityTest do
 
   alias Wander.City
 
-  @valid_attrs %{geofences_cache: %{}, name: "some content", time_zone: "some content"}
+  @valid_attrs %{name: "some content", time_zone: "some content"}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

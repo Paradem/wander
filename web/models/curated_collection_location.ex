@@ -9,7 +9,7 @@ defmodule Wander.CuratedCollectionLocation do
     belongs_to :location, Location
   end
 
-  @required_fields ~w()
+  @required_fields ~w(location_id curated_collection_id)
   @optional_fields ~w()
 
   @doc """

@@ -3,7 +3,7 @@ defmodule Wander.CuratedCollectionLocationTest do
 
   alias Wander.CuratedCollectionLocation
 
-  @valid_attrs %{}
+  @valid_attrs %{location_id: 1, curated_collection_id: 1}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

@@ -22,5 +22,8 @@ defmodule Wander.Repo.Migrations.CreateLocation do
       timestamps
     end
 
+    create index(:locations, [:longlat], using: :gist)
+    create index(:locations, [:is_welcomeable])
+
   end
 end

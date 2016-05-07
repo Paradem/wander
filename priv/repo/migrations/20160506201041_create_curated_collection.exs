@@ -17,5 +17,8 @@ defmodule Wander.Repo.Migrations.CreateCuratedCollection do
       add :location_id, references(:locations)
     end
 
+    create index(:curated_collections_locations, [:curated_collection_id, :location_id], unique: true)
+    create index(:curated_collections_locations, [:location_id])
+
   end
 end

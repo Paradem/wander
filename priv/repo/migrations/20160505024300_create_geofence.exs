@@ -8,5 +8,7 @@ defmodule Wander.Repo.Migrations.CreateGeofence do
       timestamps
     end
 
+    create index(:geofences, [:longlat], using: :gist)
+
   end
 end

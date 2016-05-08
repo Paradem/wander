@@ -15,6 +15,8 @@ defmodule Wander.LengthUnitConverter do
     {m / 1609.344, :mi}
   end
 
+  def convert({m, :m}, :m), do: {m, :m}
+
   def convert(from, to) do
     from |> convert(:m) |> convert(to)
   end

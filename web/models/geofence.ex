@@ -1,15 +1,16 @@
 defmodule Wander.Geofence do
   use Wander.Web, :model
 
-  @derive {Poison.Encoder, only: [:longlat]}
+  @derive {Poison.Encoder, only: [:lat, :lng]}
 
   schema "geofences" do
-    field :longlat, Wander.Point
+    field :lat, :float
+    field :lng, :float
 
     timestamps
   end
 
-  @required_fields ~w(longlat)
+  @required_fields ~w(lat lng)
   @optional_fields ~w()
 
   @doc """

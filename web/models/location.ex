@@ -9,7 +9,8 @@ defmodule Wander.Location do
   schema "locations" do
     field :name, :string
     field :details, :map
-    field :longlat, Wander.Point
+    field :lat, :float
+    field :lng, :float
     field :g_details, :map
     field :g_summary, :map
     field :g_place_id, :string
@@ -29,7 +30,7 @@ defmodule Wander.Location do
     timestamps
   end
 
-  @required_fields ~w(name details longlat city_id g_details g_summary g_place_id g_rating g_details_queried_at is_displayed is_notifiable is_go_hereable is_you_are_hereable is_welcomeable website)
+  @required_fields ~w(name details lat lng city_id g_details g_summary g_place_id g_rating g_details_queried_at is_displayed is_notifiable is_go_hereable is_you_are_hereable is_welcomeable website)
   @optional_fields ~w()
 
   @doc """
@@ -60,8 +61,6 @@ defmodule Wander.Location do
   end
 
   def with_api_fields(location) do
-    location |> Map.merge(%{lat: location.longlat.y,
-                           lng: location.longlat.x,
-                           curatedCollections: location.curated_collections |> Enum.map(&(&1.id))})
+    location |> Map.merge(%{curatedCollections: location.curated_collections |> Enum.map(&(&1.id))})
   end
 end

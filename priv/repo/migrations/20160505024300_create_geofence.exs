@@ -3,12 +3,13 @@ defmodule Wander.Repo.Migrations.CreateGeofence do
 
   def change do
     create table(:geofences) do
-      add :longlat, :point
+      add :lat, :float
+      add :lng, :float
 
       timestamps
     end
 
-    create index(:geofences, [:longlat], using: :gist)
+    create index(:geofences, ["ll_to_earth(lat, lng)"], using: :gist)
 
   end
 end

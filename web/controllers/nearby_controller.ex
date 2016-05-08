@@ -4,27 +4,26 @@ defmodule Wander.NearbyController do
   alias Wander.Location
   alias Wander.City
   alias Wander.CuratedCollection
-  alias Postgrex.Point
   alias Wander.Distance
 
   @nearby_distance {0.5, :km}
 
-  def index(conn, params) do
-    json conn, params |> as_point |> nearby
+  def index(conn, %{"lat" => lat, "lng" => lng}) do
+    json conn, nearby(String.to_float(lat), String.to_float(lng))
   end
 
-  defp nearby(point) do
-    %{q: %{lat: point.y, lng: point.x}}
+  defp nearby(lat, lng) do
+    %{q: %{lat: lat, lng: lng}}
     |> with_locations
     |> with_city
     |> with_neighborhoods
     |> with_curated_collections
   end
 
-  defp with_locations(%{q: point} = response) do
+  defp with_locations(%{q: %{lat: lat, lng: lng}} = response) do
     locations = Location
     |> Location.with_curated_collections
-    |> Distance.within_distance(@nearby_distance, as_point(point))
+    |> Distance.within_distance(@nearby_distance, lat, lng)
     |> Repo.all
     |> Location.with_api_fields
 
@@ -33,10 +32,10 @@ defmodule Wander.NearbyController do
 
   defp with_city(%{locations: []} = response), do: response
 
-  defp with_city(%{locations: locations, q: point} = response) do
+  defp with_city(%{locations: locations, q: %{lat: lat, lng: lng}} = response) do
     city = (from city in City, where: city.id == ^hd(locations).city_id)
     |> Repo.one!
-    |> City.with_geofences(@nearby_distance, as_point(point))
+    |> City.with_geofences(@nearby_distance, lat, lng)
 
     response |> Map.merge(%{city: city})
   end
@@ -54,10 +53,5 @@ defmodule Wander.NearbyController do
     |> Repo.all
 
     response |> Map.merge(%{curatedCollections: curated_collections})
-  end
-
-  defp as_point(%{lat: lat, lng: lng}), do: %Point{y: lat, x: lng}
-  defp as_point(%{"lat" => lat, "lng" => lng}) do
-    %Point{y: String.to_float(lat), x: String.to_float(lng)}
   end
 end

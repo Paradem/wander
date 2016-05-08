@@ -6,21 +6,20 @@ defmodule NearbyControllerTest do
   alias Wander.Geofence
   alias Wander.CuratedCollection
   alias Wander.CuratedCollectionLocation
-  alias Postgrex.Point
 
   setup do
     cities = [%City{ name: "Terrassa" }]
     |> Enum.map(&Repo.insert!/1)
 
     locations = [
-      %Location{ name: "Terrassa castle", longlat: %Point{y: 41.559977, x: 2.016617}, city_id: hd(cities).id },
-      %Location{ name: "Terrassa Masia Freixa", longlat: %Point{y: 41.5630095, x: 2.0020335}, city_id: hd(cities).id },
-      %Location{ name: "Terrassa Torre del Palau", longlat: %Point{y: 41.562043, x: 2.0092323}, city_id: hd(cities).id },
-      %Location{ name: "Terrassa Centre", longlat: %Point{y: 41.562043, x: 2.0092323}, city_id: hd(cities).id, is_welcomeable: true },
+      %Location{ name: "Terrassa castle", lat: 41.559977, lng: 2.016617, city_id: hd(cities).id },
+      %Location{ name: "Terrassa Masia Freixa", lat: 41.5630095, lng: 2.0020335, city_id: hd(cities).id },
+      %Location{ name: "Terrassa Torre del Palau", lat: 41.562043, lng: 2.0092323, city_id: hd(cities).id },
+      %Location{ name: "Terrassa Centre", lat: 41.562043, lng: 2.0092323, city_id: hd(cities).id, is_welcomeable: true },
     ]
     |> Enum.map(&Repo.insert!/1)
 
-    geofences = [%Geofence{longlat: %Point{y: 41.5630095, x: 2.0020335}}]
+    geofences = [%Geofence{lat: 41.5630095, lng: 2.0020335}]
     |> Enum.map(&Repo.insert!/1)
 
     curated_collections = [%CuratedCollection{name: "Col1"}]

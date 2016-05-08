@@ -28,9 +28,9 @@ defmodule Wander.City do
     |> cast(params, @required_fields, @optional_fields)
   end
 
-  def with_geofences(city, distance, from_point) do
+  def with_geofences(city, distance, lat, lng) do
     geofences = Geofence
-    |> Distance.within_distance(distance, from_point)
+    |> Distance.within_distance(distance, lat, lng)
     |> Repo.all
     Map.merge(city, %{geofences: geofences})
   end

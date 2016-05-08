@@ -5,7 +5,8 @@ defmodule Wander.Repo.Migrations.CreateLocation do
     create table(:locations) do
       add :name, :string
       add :details, :map
-      add :longlat, :point
+      add :lat, :float
+      add :lng, :float
       add :city_id, references(:cities)
       add :g_details, :map
       add :g_summary, :map
@@ -22,8 +23,8 @@ defmodule Wander.Repo.Migrations.CreateLocation do
       timestamps
     end
 
-    create index(:locations, [:longlat], using: :gist)
-    create index(:locations, [:is_welcomeable])
+    create index(:locations, ["ll_to_earth(lat, lng)"], using: :gist)
+    create index(:locations, [:city_id, :is_welcomeable])
 
   end
 end
